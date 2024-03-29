@@ -1,0 +1,5 @@
+# Ignoreubuntu-bionic-18.04-cloudimg-console.log
+ubuntu-bionic-18.04-cloudimg-console.log
+
+# Ignore the logs directory
+.vagrant/
