@@ -1,0 +1,63 @@
+- name: users | odo | create group
+  tags: groups,odo,users
+  group:
+    name: "{{ group_odo }}"
+    state: present
+
+- name: users | odo | create user
+  tags: odo,sudo,users
+  user:
+    name: "{{ user_name_odo }}"
+    home: "{{ user_home_odo }}"
+    group: "{{ group_odo }}"
+    groups: adm,ansible,{{ sudo_group_odo }}
+    state: present
+    comment: "ODO GODFREY"
+    password: "{{ odo_passwd }}"
+    shell: "{{ user_shell_odo }}"
+
+- name: users | odo | create .ssh directory
+  tags: dotfiles,odo,ssh,users
+  file:
+    path: "{{ item.dir }}"
+    state: directory
+    owner: "{{ user_name_odo }}"
+    group: "{{ group_odo }}"
+    mode: 0700
+  with_items:
+    - { dir: '/home/odo/.ssh' }
+
+- name: users | odo | add public key
+  tags: dotfiles,odo,ssh,ssh-keys,users
+  authorized_key:
+    user: "{{ user_name_odo }}"
+    key: "{{ item }}"
+  with_file:
+    - users/odo/ssh/odo_id_ed25519.pub
+
+- name: users | odo | add sudoers file
+  tags: settings,odo,sudo,system,users
+  copy:
+    src: "{{ sudoer_odo_src }}"
+    dest: "{{ sudoer_odo_dest }}"
+    owner: root
+    group: root
+    mode: 0440
+
+- name: users | odo | Copy .bashrc file for odo
+  copy:
+    src: "{{ bashrc_src }}"
+    dest: "{{ odo_bashrc_dest }}"
+    owner: "{{ user_name_odo }}"
+    group: "{{ group_odo }}"
+
+- name: users | odo | Add odo to Docker group
+  ansible.builtin.user:
+    name: "{{ user_name_odo }}"
+    groups: docker
+    append: yes
+  become: true
+
+
+
+

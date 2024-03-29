@@ -1,0 +1,10 @@
+- block:
+  # Make sure users exist on the system
+  - import_tasks: users/gift.yml
+  - import_tasks: users/odo.yml
+
+  # Set up the terraform environment
+  - import_tasks: software/terraform_setup.yml
+
+  rescue:
+    - set_fact: task_failed=true

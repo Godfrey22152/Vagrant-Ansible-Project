@@ -1,0 +1,18 @@
+Host node1
+   Hostname 172.16.1.51
+   Port 2201
+   User vagrant
+   IdentityFile ~/.ssh/vagrant.key.rsa
+
+Host node2
+   Hostname 172.16.1.52
+   Port 2202
+   User vagrant
+   IdentityFile ~/.ssh/vagrant.key.rsa
+
+Host node3
+   Hostname 172.16.1.53
+   Port 2203
+   User vagrant
+   IdentityFile ~/.ssh/vagrant.key.rsa
+   

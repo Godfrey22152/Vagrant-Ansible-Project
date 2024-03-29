@@ -1,0 +1,16 @@
+- block:
+  # Make sure users exist on the system
+  - name: Import tasks for Godfrey
+    import_tasks: users/godfrey.yml
+
+  - name: Import tasks for Owen
+    import_tasks: users/owen.yml
+
+  # Set up the ansible environment
+  - name: Import ansible setup tasks
+    import_tasks: ansible_setup.yml
+
+
+  rescue:
+    - set_fact: task_failed=true
+

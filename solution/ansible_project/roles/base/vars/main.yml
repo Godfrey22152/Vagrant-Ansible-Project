@@ -1,0 +1,10 @@
+dconf_package: dconf-cli
+dns_utils_package: dnsutils
+nfs_client_package: nfs-common
+python_package: python3
+python_pip_package: python3-pip
+python_virtualenv_package: python3-virtualenv
+rename_package: rename
+ftp_path: /usr/lib/openssh/sftp-server
+sudo_group: sudo
+vim_package: vim-nox

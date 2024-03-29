@@ -1,0 +1,32 @@
+- name: Install Nginx web server | Configure Server3 as a Web Server with SSL/TLS Encryption
+  apt:
+    name: nginx
+    state: present
+
+- name: Install Certbot
+  apt:
+    name: certbot
+    state: present
+
+- name: Obtain SSL/TLS certificates using Certbot
+  command: certbot certonly --nginx --agree-tos --no-eff-email -m {{ email_address }} -d {{ domain_name }}
+
+- name: Configure Nginx for HTTPS
+  template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/sites-available/default
+  notify: Restart Nginx Service
+
+- name: Configure HTTP to HTTPS redirection
+  lineinfile:
+    path: /etc/nginx/sites-available/default
+    regexp: '^server_name'
+    line: 'return 301 https://$host$request_uri;'
+  notify: Restart Nginx Service
+
+- name: Copy website files to /var/www/html directory
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/files/listrace_v1.0"
+    dest: /var/www/html
+  become: true
+

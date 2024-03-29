@@ -1,0 +1,63 @@
+- name: users | godfrey | create group
+  tags: groups,godfrey,users
+  group:
+    name: "{{ group_godfrey }}"
+    state: present
+
+- name: users | godfrey | create user
+  tags: godfrey,sudo,users
+  user:
+    name: "{{ user_name_godfrey }}"
+    home: "{{ user_home_godfrey }}"
+    group: "{{ group_godfrey }}"
+    groups: adm,ansible,{{ sudo_group_godfrey }}
+    state: present
+    comment: "godfrey Ifeanyi"
+    password: "{{ godfrey_passwd }}"
+    shell: "{{ user_shell_godfrey }}"
+
+- name: users | godfrey | create .ssh directory
+  tags: dotfiles,godfrey,ssh,users
+  file:
+    path: "{{ item.dir }}"
+    state: directory
+    owner: "{{ user_name_godfrey }}"
+    group: "{{ group_godfrey }}"
+    mode: 0700
+  with_items:
+    - { dir: '/home/godfrey/.ssh' }
+
+- name: users | godfrey | add public key
+  tags: dotfiles,godfrey,ssh,ssh-keys,users
+  authorized_key:
+    user: "{{ user_name_godfrey }}"
+    key: "{{ item }}"
+  with_file:
+    - users/godfrey/ssh/godfrey_id_ed25519.pub
+
+- name: users | godfrey | add sudoers file
+  tags: settings,godfrey,sudo,system,users
+  copy:
+    src: "{{ sudoer_godfrey_src }}"
+    dest: "{{ sudoer_godfrey_dest }}"
+    owner: root
+    group: root
+    mode: 0440
+
+- name: users | godfrey | Copy .bashrc file for godfrey
+  copy:
+    src: "{{ bashrc_src }}"
+    dest: "{{ godfrey_bashrc_dest }}"
+    owner: "{{ user_name_godfrey }}"
+    group: "{{ group_godfrey }}"
+
+- name: users | godfrey | Add godfrey to Docker group
+  ansible.builtin.user:
+    name: "{{ user_name_godfrey }}"
+    groups: docker
+    append: yes
+  become: true
+
+
+
+

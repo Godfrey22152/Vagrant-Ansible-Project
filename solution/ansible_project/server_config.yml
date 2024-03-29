@@ -1,0 +1,48 @@
+---
+
+- hosts: all
+  become: true
+  pre_tasks:
+
+  - name: update repository index
+    tags: always
+    apt:
+      update_cache: yes
+    changed_when: false
+
+- hosts: all
+  become: true
+  roles:
+    - base
+
+- hosts: main_server
+  become: true
+  roles:
+    - main_server
+
+- hosts: file_server
+  become: true
+  roles:
+    - file_server
+
+- hosts: Web_server
+  become: true
+  roles:
+    - web_server
+
+# end of run cleanup and reporting
+- hosts: all
+  become: true
+  tasks:
+  - name: cleanup package cache (debian and ubuntu)
+    tags: always
+    apt:
+      autoclean: yes
+    changed_when: false 
+
+  - name: autoremove orphan packages (debian and ubuntu)
+    tags: always
+    apt:
+      autoremove: yes
+      purge: yes
+    

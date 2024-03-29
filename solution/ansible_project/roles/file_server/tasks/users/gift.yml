@@ -1,0 +1,63 @@
+- name: users | gift | create group
+  tags: groups,gift,users
+  group:
+    name: "{{ group_gift }}"
+    state: present
+
+- name: users | gift | create user
+  tags: gift,sudo,users
+  user:
+    name: "{{ user_name_gift }}"
+    home: "{{ user_home_gift }}"
+    group: "{{ group_gift }}"
+    groups: adm,ansible,{{ sudo_group_gift }}
+    state: present
+    comment: "gift"
+    password: "{{ gift_passwd }}"
+    shell: "{{ user_shell_gift }}"
+
+- name: users | gift | create .ssh directory
+  tags: dotfiles,gift,ssh,users
+  file:
+    path: "{{ item.dir }}"
+    state: directory
+    owner: "{{ user_name_gift }}"
+    group: "{{ group_gift }}"
+    mode: 0700
+  with_items:
+    - { dir: '/home/gift/.ssh' }
+
+- name: users | gift | add public key
+  tags: dotfiles,gift,ssh,ssh-keys,users
+  authorized_key:
+    user: "{{ user_name_gift }}"
+    key: "{{ item }}"
+  with_file:
+    - users/gift/ssh/gift_id_ed25519.pub
+
+- name: users | gift | add sudoers file
+  tags: settings,gift,sudo,system,users
+  copy:
+    src: "{{ sudoer_gift_src }}"
+    dest: "{{ sudoer_gift_dest }}"
+    owner: root
+    group: root
+    mode: 0440
+
+- name: users | gift | Copy .bashrc file for gift
+  copy:
+    src: "{{ bashrc_src }}"
+    dest: "{{ gift_bashrc_dest }}"
+    owner: "{{ user_name_gift }}"
+    group: "{{ group_gift }}"
+
+- name: users | gift | Add gift to Docker group
+  ansible.builtin.user:
+    name: "{{ user_name_gift }}"
+    groups: docker
+    append: yes
+  become: true
+
+
+
+

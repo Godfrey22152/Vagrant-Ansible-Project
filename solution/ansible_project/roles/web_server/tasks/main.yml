@@ -1,0 +1,7 @@
+# Load variables
+- include_vars: "main.yml"
+  tags: always
+
+- block:
+  # Configure Server3 as a Web Server with SSL/TLS Encryption
+  - import_tasks: web_server_config.yml

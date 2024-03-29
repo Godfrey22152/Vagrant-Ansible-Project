@@ -1,0 +1,24 @@
+- name: system setup | utilities | install utility packages
+  tags: packages,system,settings
+  package:
+    state: latest
+    name:
+      - nginx
+      - curl
+      - "{{ dns_utils_package}}"
+      - htop
+      - lsof
+      - net-tools
+      - apache2
+      - nmap
+      - "{{ rename_package }}"
+      - rsync
+      - telnet
+      - sshfs
+      - tmux
+      - tree
+      - "{{ vim_package }}"
+      - wget
+      - whois
+      - deborphan
+

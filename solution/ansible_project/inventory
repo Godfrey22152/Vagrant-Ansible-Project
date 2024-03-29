@@ -1,0 +1,8 @@
+[main_server]
+node1      
+
+[file_server]    
+node2
+
+[web_server]    
+node3     

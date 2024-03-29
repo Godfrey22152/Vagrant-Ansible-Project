@@ -1,0 +1,46 @@
+- name: users | owen | create group
+  tags: groups,owen,users
+  group:
+    name: "{{ group_owen }}"
+    state: present
+
+- name: users | owen | create user
+  tags: owen,sudo,users
+  user:
+    name: "{{ user_name_owen }}"
+    home: "{{ user_home_owen }}"
+    group: "{{ group_owen }}"
+    groups: adm,ansible,{{ sudo_group }}
+    state: present
+    comment: "owen P"
+    password: "{{ owen_passwd }}"
+    shell: "{{ user_shell_owen }}"
+
+- name: users | owen | create .ssh directory
+  tags: dotfiles,owen,ssh,users
+  file:
+    path: "{{ item.dir }}"
+    state: directory
+    owner: "{{ user_name_owen }}"
+    group: "{{ group_owen }}"
+    mode: 0700
+  with_items:
+    - { dir: '/home/owen/.ssh' }
+
+- name: users | owen | add public key
+  tags: dotfiles,owen,ssh,ssh-keys,users
+  authorized_key:
+    user: "{{ user_name_owen }}"
+    key: "{{ item }}"
+  with_file:
+    - users/owen/ssh/owen_id_ed25519.pub
+
+- name: users | owen | Copy .bashrc file for owen
+  copy:
+    src: "{{ bashrc_src }}"
+    dest: "{{ owen_bashrc_dest }}"
+    owner: "{{ user_name_owen }}"
+    group: "{{ group_owen }}"
+
+
+
